@@ -158,7 +158,7 @@ def train_GAE_BCELoss(adj_matrix):
 def get_POI_embeddings(load_from_file=False):
     if not load_from_file:
         parameters.ae_hidden1_dim = 20
-        parameters.ae_hidden2_dim = 12
+        parameters.ae_hidden2_dim = 16
         parameters.ae_num_epoch = 5000
         parameters.ae_learning_rate = 0.05
 
@@ -203,5 +203,3 @@ def get_POI_embeddings(load_from_file=False):
 
     Zb = np.load(os.path.join("model_files", "POI_embedding_" + data_generator.embedding_name + ".npy"))
     return Zb
-
-#get_POI_embeddings(load_from_file=False)

@@ -34,8 +34,9 @@ class TrajPredictor(nn.Module):
         self.fc2 = nn.Linear(30, 1)
 
     def forward(self, seq, seq_lengths, seq_sd):
+
         seq_sd = self.embedding(seq_sd)
-        seq_sd = torch.reshape(seq_sd, shape=[seq.shape[0], 1, 2 * self.embedding_dim])
+        seq_sd = torch.reshape(seq_sd, shape=[seq.shape[0], 1, 2*self.embedding_dim])
         seq_sd = seq_sd.repeat(1, seq.shape[1], 1)
 
         embeds = self.embedding(seq)
@@ -48,7 +49,7 @@ class TrajPredictor(nn.Module):
         poi_emb_repeated = poi_emb_unsqueezed.repeat(seq.shape[0], seq.shape[1], 1, 1)
 
         output, (hidden, _) = self.encoder(lstm_input)
-        output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=True)
+        output, _ = nn.utils.rnn.pad_packed_sequence(output,batch_first=True)
 
         output_unsqueezed = torch.unsqueeze(output, 2)
         output_repeated = output_unsqueezed.repeat(1, 1, poi_emb_repeated.shape[2], 1)
@@ -81,12 +82,12 @@ def print_all(model, backward_model):
         targets = torch.LongTensor(targets).to(device)
         output = torch.softmax(model(inputs, seq_lengths, source_dest), dim=2)
 
-        # op = torch.transpose(output, 0, 1)
+        #op = torch.transpose(output, 0, 1)
         op = output
         op = op.cpu().detach().numpy()
         op = np.argmax(op, axis=2)
 
-        # tgt = torch.transpose(targets, 0, 1)
+        #tgt = torch.transpose(targets, 0, 1)
         tgt = targets
         tgt = tgt.cpu().detach().numpy()
 
@@ -173,11 +174,11 @@ def get_forward_lstm_model(load_from_file=True):
     forward_lstm_model = TrajPredictor(pretrained_embeddings, parameters.lstm_model_hidden_size).to(device)
     fwd_model_state_dict = torch.load(os.path.join("model_files", "LSTM_net_1_f_" + data_generator.embedding_name))
     forward_lstm_model.load_state_dict(fwd_model_state_dict)
-    # print_all(forward_lstm_model, backward_model=False)
+    #print_all(forward_lstm_model, backward_model=False)
     return forward_lstm_model
 
 
-# get_forward_lstm_model(False)
+#get_forward_lstm_model(False)
 
 
 def get_backward_lstm_model(load_from_file=True):
@@ -192,7 +193,7 @@ def get_backward_lstm_model(load_from_file=True):
     backward_lstm_model = TrajPredictor(pretrained_embeddings, parameters.lstm_model_hidden_size).to(device)
     bwd_model_state_dict = torch.load(os.path.join("model_files", "LSTM_net_1_b_" + data_generator.embedding_name))
     backward_lstm_model.load_state_dict(bwd_model_state_dict)
-    # print_all(backward_lstm_model, backward_model=True)
+    #print_all(backward_lstm_model, backward_model=True)
     return backward_lstm_model
 
-# get_backward_lstm_model(False)
+#get_backward_lstm_model(False)

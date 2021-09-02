@@ -171,15 +171,14 @@ def extract_train_test_info(dat_ix):
 
         row0 = []
         row1 = []
-        row2 = []
 
         for row in csv_reader:
 
-            if (line_no == 0):
+            if line_no == 0:
                 row0 = row.copy()
-            elif (line_no == 1):
+            elif line_no == 1:
                 row1 = row.copy()
-            elif (line_no == 2):
+            elif line_no == 2:
                 row2 = row.copy()
 
                 curr_traj = [int(poi) for poi in row0]
